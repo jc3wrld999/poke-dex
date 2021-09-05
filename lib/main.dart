@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+
+import 'package:pokedex/view/util.dart';
+import 'package:provider/provider.dart';
+
+import 'data/provider.dart';
+import 'view/detail.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<MyProvider>(create: (context) => MyProvider()),
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.cyan,
-        ),
-        home: HomePage());
+    return MaterialApp(home: HomePage());
   }
 }
-
-enum _State { LOADING, DONE, ERROR, SUCCESS }
 
 class HomePage extends StatefulWidget {
   @override
@@ -26,9 +28,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State {
-  _State _state = _State.LOADING;
-  Map<String, dynamic> _pokedex = {};
-
   @override
   void initState() {
     super.initState();
@@ -36,15 +35,9 @@ class _HomePage extends State {
   }
 
   Future<void> fetchPokeDex() async {
-    Uri _uri = Uri.parse(
-        "https://raw.githubusercontent.com/Biuni/PokemonGO-Pokedex/master/pokedex.json");
+    await Provider.of<MyProvider>(context, listen: false).fetchPokeDex();
 
-    await http.get(_uri).then((response) {
-      setState(() {
-        _pokedex = jsonDecode(response.body);
-        _state = _State.DONE;
-      });
-    });
+    setState(() {});
   }
 
   @override
@@ -54,22 +47,38 @@ class _HomePage extends State {
         title: Text("Poke App"),
         backgroundColor: Colors.yellow[700],
       ),
-      body: _state == _State.LOADING
+      body: Provider.of<MyProvider>(context, listen: false).getState() ==
+              MyState.LOADING
           ? Center(
               child: CircularProgressIndicator(),
             )
           : GridView.count(
               crossAxisCount: 2,
-              children: _pokedex["pokemon"]
-                  .map<Widget>((poketmon) => Card(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(poketmon["num"]),
-                            Text(poketmon["name"]),
-                            Image.network(poketmon["img"])
-                          ],
-                        ),
+              children: Provider.of<MyProvider>(context, listen: false)
+                  .getPokeDex()["pokemon"]
+                  .map<Widget>((poketmon) => GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DetailPage(poketmon)));
+                        },
+                        child: Hero(
+                            tag: poketmon,
+                            child: Card(
+                              color: MyColor[poketmon["type"][0].toString()],
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(poketmon["num"], style: s_textStyle),
+                                  Text("Type" + poketmon["type"][0],
+                                      style: s_textStyle),
+                                  Text(poketmon["name"], style: s_textStyle),
+                                  Image.network(poketmon["img"])
+                                ],
+                              ),
+                            )),
                       ))
                   .toList()),
     );
