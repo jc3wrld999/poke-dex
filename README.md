@@ -1,16 +1,8 @@
 # pokedex
 
-A new Flutter project.
+![pokedex](https://user-images.githubusercontent.com/61821641/132126395-e974c441-8a51-41f0-beb8-24be54e0f425.gif)
+![pokedex3](https://user-images.githubusercontent.com/61821641/132126384-085b563f-5c29-45b7-aed9-9686cca00479.gif)
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+## Flutter Poketmon App
+```
