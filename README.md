@@ -4,6 +4,15 @@
 
 ## Demo
 
+```
+lib
+├── main.dart
+├── data
+│   └── provider.dart
+└── view
+    └── detail.dart
+```
+
 ![pokedex3](https://user-images.githubusercontent.com/61821641/154667195-4707a36c-c2be-42d1-8318-7cca97e825e8.gif)
 
 ## License
